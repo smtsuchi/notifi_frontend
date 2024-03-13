@@ -18,7 +18,7 @@ export const authApiSlice = emptySplitApi.injectEndpoints({
                 method: 'POST',
                 body
             }),
-            invalidateTags: ['Auth'],
+            invalidatesTags: ['Auth'],
         }),
         login: builder.mutation<LoginResponse, {username: string, password: string}>({
             query: ({username, password}: {username: string, password: string}) => ({
@@ -26,14 +26,14 @@ export const authApiSlice = emptySplitApi.injectEndpoints({
                 method: 'POST',
                 headers: {Authorization: `Basic ${btoa(`${username}:${password}`)}`},
             }),
-            invalidateTags: ['Auth'],
+            invalidatesTags: ['Auth'],
         }),
         logout: builder.mutation<BaseResponse, void>({
             query: () => ({
                 url: `/auth/logout`,
                 method: 'POST',
             }),
-            invalidateTags: ['Auth'],
+            invalidatesTags: ['Auth'],
         }),
     })
 });

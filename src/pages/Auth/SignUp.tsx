@@ -1,13 +1,14 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextField, Grid, Box, Typography, Avatar } from '@mui/material';
+import { Button, TextField, Grid, Box, Typography, Avatar, LinearProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AuthBox from './AuthBox';
+import CenterBox from '../../components/CenterBox';
 import { useSignupMutation } from '../../slices/authSlice';
 import { ErrorType } from '../../types/responses/errorResponses';
 import toast from 'react-hot-toast';
+import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/
 
 const validationSchema = Yup.object({
@@ -36,8 +37,9 @@ const initialValues = {
 };
 
 const SignUp: React.FC = () => {
-    const [ sendSignup ] = useSignupMutation();
+    const [ sendSignup, {isLoading} ] = useSignupMutation();
     const navigate = useNavigate();
+    const handleError = useApiErrorHandler();
     const handleSubmit = async ({username, password, email, phone}: typeof initialValues) => {
         try{
             const response = await sendSignup({username, password, email, phone}).unwrap()
@@ -47,11 +49,11 @@ const SignUp: React.FC = () => {
             }
         } catch (_e) {
             const e = _e as ErrorType
-            toast.error(e.data.message);
+            handleError(e);
           }
     };
     return (
-        <AuthBox>
+        <CenterBox>
             <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                 <LockOutlinedIcon />
             </Avatar>
@@ -152,8 +154,9 @@ const SignUp: React.FC = () => {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                             >
-                                Sign In
+                                Sign Up
                             </Button>
+                            {isLoading && <LinearProgress />}
                             <Grid container>
                                 <Grid item>
                                     <p>
@@ -171,7 +174,7 @@ const SignUp: React.FC = () => {
                     )
                 }}
             </Formik>
-        </AuthBox>
+        </CenterBox>
     )
 }
 

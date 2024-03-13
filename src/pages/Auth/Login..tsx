@@ -1,14 +1,15 @@
 import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Avatar } from '@mui/material';
+import { Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Avatar, LinearProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AuthBox from './AuthBox';
+import CenterBox from '../../components/CenterBox';
 import { useLoginMutation } from '../../slices/authSlice';
 import { useAuth } from '../../hooks/useAuth';
 import { ErrorType } from '../../types/responses/errorResponses';
 import toast from 'react-hot-toast';
+import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 const validationSchema = Yup.object({
   username: Yup.string()
     .required('Username is required')
@@ -24,9 +25,10 @@ const initialValues = {
 
 
 const Login: React.FC = () => {
-  const [sendLogin] = useLoginMutation()
+  const [sendLogin, {isLoading}] = useLoginMutation()
   const { login } = useAuth();
   const navigate = useNavigate();
+  const handleError = useApiErrorHandler();
 
   const handleSubmit = async ({ username, password }: typeof initialValues) => {
     try{
@@ -39,13 +41,13 @@ const Login: React.FC = () => {
     }
     catch (_e) {
       const e = _e as ErrorType
-      toast.error(e.data.message);
+      handleError(e)
     }
     
   };
 
   return (
-    <AuthBox>
+    <CenterBox>
       <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
         <LockOutlinedIcon />
       </Avatar>
@@ -109,6 +111,7 @@ const Login: React.FC = () => {
               >
                 Sign In
               </Button>
+              {isLoading && <LinearProgress />}
               <Grid container>
                 <Grid item>
                   <p>
@@ -126,7 +129,7 @@ const Login: React.FC = () => {
           )
         }}
       </Formik>
-    </AuthBox>
+    </CenterBox>
   );
 }
 export default Login;

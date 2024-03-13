@@ -4,7 +4,9 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const emptySplitApi = createApi({
     tagTypes: [
-        'Auth'
+        'Auth',
+        'Subscriptions',
+        'User'
     ],
     baseQuery: fetchBaseQuery({
         baseUrl: `${BACKEND_URL}`,

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { AppBar, Box, Button, Toolbar, IconButton, Typography, Menu, Container, Avatar, Tooltip, MenuItem } from '@mui/material';
-import { Menu as MenuIcon, NotificationsActive as NotificationsActiveIcon } from '@mui/icons-material';
+import { Menu as MenuIcon, NotificationsActive as NotificationsActiveIcon, Login as LoginIcon } from '@mui/icons-material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useLogoutMutation } from '../slices/authSlice';
 import toast from 'react-hot-toast';
 import { ErrorType } from '../types/responses/errorResponses';
+import { useApiErrorHandler } from '../hooks/useApiErrorHandler';
 
 const pages = [
   {
@@ -20,16 +21,17 @@ const pages = [
 
 
 
-function ResponsiveAppBar() {
+const ResponsiveAppBar = () => {
   const navigate = useNavigate();
   const [sendLogout] = useLogoutMutation();
   const { logout } = useAuth();
+  const handleError = useApiErrorHandler();
   const settings = [{
     label: 'Profile',
     onClick: () => { navigate('/profile') }
   }, {
-    label: 'Account',
-    onClick: () => { navigate('/account') }
+    label: 'Settings',
+    onClick: () => { navigate('/settings') }
   }, {
     label: 'Dashboard',
     onClick: () => { navigate('/dashboard') }
@@ -44,9 +46,8 @@ function ResponsiveAppBar() {
           toast.success(response.message);
         }
       } catch (_e) {
-        console.log(_e)
         const e = _e as ErrorType
-        toast.error(e.data.message);
+        handleError(e)
       }
     }
   }];
@@ -127,13 +128,13 @@ function ResponsiveAppBar() {
               }}
             >
               {pages.map(({ label, link }) => (
-                <MenuItem key={label} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">
-                    <Link to={link}>
+                <Link key={label} to={link} onClick={handleCloseNavMenu}>
+                  <MenuItem>
+                    <Typography textAlign="center">
                       {label}
-                    </Link>
-                  </Typography>
-                </MenuItem>
+                    </Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
@@ -158,15 +159,14 @@ function ResponsiveAppBar() {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map(({ label, link }) => (
-              <Button
-                key={label}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                <Link to={link}>
+              <Link key={label} to={link}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
                   {label}
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             ))}
           </Box>
 
@@ -194,22 +194,34 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 {settings.map((setting) => (
-                  <MenuItem key={setting.label} onClick={()=>handleClick(setting.onClick)}>
+                  <MenuItem key={setting.label} onClick={() => handleClick(setting.onClick)}>
                     <Typography textAlign="center">{setting.label}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
             </>) : <>
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+              <Box sx={{ flexGrow: 1 }}>
 
                 <Button
                   onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
+                  sx={{ my: 2, color: 'white', display: { xs: 'none', md: 'flex' } }}
                 >
                   <Link to='/login'>
                     Log In
                   </Link>
                 </Button>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  color="inherit"
+                  sx={{ display: { xs: 'flex', md: 'none' } }}
+                >
+                  <Link to='/login'>
+                    <LoginIcon />
+                  </Link>
+                </IconButton>
 
               </Box>
             </>}

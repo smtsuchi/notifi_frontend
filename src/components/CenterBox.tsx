@@ -1,7 +1,7 @@
 import React from 'react';
 import { CssBaseline, Box, Container } from '@mui/material';
 
-const AuthBox: React.FC<React.PropsWithChildren> = ({ children }) => {
+const CenterBox: React.FC<React.PropsWithChildren> = ({ children }) => {
     return (
         <Box
             display="flex"
@@ -9,10 +9,9 @@ const AuthBox: React.FC<React.PropsWithChildren> = ({ children }) => {
             alignItems={{ sm: "center" }}
             marginTop="24px"
             minHeight="100vh"
-            minWidth="100vw"
         >
 
-            <Container component="main" maxWidth="xs" sx={{ boxShadow: { xs: 0, sm: 3 }, borderRadius: 2, }}>
+            <Container component="div" maxWidth="xs" sx={{ boxShadow: { xs: 0, sm: 3 }, borderRadius: 2, }}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -29,4 +28,4 @@ const AuthBox: React.FC<React.PropsWithChildren> = ({ children }) => {
     )
 }
 
-export default AuthBox
+export default CenterBox
