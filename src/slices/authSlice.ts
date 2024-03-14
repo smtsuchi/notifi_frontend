@@ -1,5 +1,4 @@
 import { emptySplitApi } from "./baseApi";
-import { EndpointBuilder, BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query";
 import { LoginResponse } from "../types/responses/authResponses";
 import { BaseResponse } from "../types/responses/baseResponse";
 
@@ -11,7 +10,7 @@ interface SignUpData {
 }
 
 export const authApiSlice = emptySplitApi.injectEndpoints({
-    endpoints: (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, unknown, FetchBaseQueryMeta>, "Auth", "api">) => ({
+    endpoints: (builder) => ({
         signup: builder.mutation<BaseResponse, SignUpData>({
             query: (body: SignUpData) => ({
                 url: `/auth/signup`,
@@ -26,14 +25,14 @@ export const authApiSlice = emptySplitApi.injectEndpoints({
                 method: 'POST',
                 headers: {Authorization: `Basic ${btoa(`${username}:${password}`)}`},
             }),
-            invalidatesTags: ['Auth'],
+            invalidatesTags: ['Auth', 'Subscriptions', 'User'],
         }),
         logout: builder.mutation<BaseResponse, void>({
             query: () => ({
                 url: `/auth/logout`,
                 method: 'POST',
             }),
-            invalidatesTags: ['Auth'],
+            invalidatesTags: ['Auth', 'Subscriptions', 'User'],
         }),
     })
 });

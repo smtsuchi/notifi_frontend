@@ -1,6 +1,6 @@
 import { emptySplitApi } from "./baseApi";
-import { EndpointBuilder, BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query";
 import { BaseResponse } from "../types/responses/baseResponse";
+import { UserResponse } from "../types/responses/userResponses";
 import { NotificationMethodType } from "../types/entities/UserType";
 
 interface UpdateNotificationMethodRequestData {
@@ -9,9 +9,14 @@ interface UpdateNotificationMethodRequestData {
 interface UpdateNotifyOnDropOnlyRequestData {
     notify_on_drop_only: boolean,
 }
+interface EditProfileRequestData {
+    username: string,
+    email: string,
+    phone: string,
+}
 
 export const userApiSlice = emptySplitApi.injectEndpoints({
-    endpoints: (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, unknown, FetchBaseQueryMeta>, "Auth", "api">) => ({
+    endpoints: (builder) => ({
         updateNotificationMethod: builder.mutation<BaseResponse, UpdateNotificationMethodRequestData>({
             query: (body: UpdateNotificationMethodRequestData) => ({
                 url: `/api/user/notification-method`,
@@ -30,10 +35,20 @@ export const userApiSlice = emptySplitApi.injectEndpoints({
             }),
             invalidatesTags: ['User'],
         }),
+        editProfile: builder.mutation<UserResponse, EditProfileRequestData>({
+            query: (body: EditProfileRequestData) => ({
+                url: `/api/user/profile`,
+                method: 'PUT',
+                credentials: 'include',
+                body
+            }),
+            invalidatesTags: ['User'],
+        }),
     })
 });
 
 export const {
     useUpdateNotifyOnDropOnlyMutation,
     useUpdateNotificationMethodMutation,
+    useEditProfileMutation,
 } = userApiSlice;

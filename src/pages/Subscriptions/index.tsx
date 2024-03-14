@@ -4,6 +4,7 @@ import Subscription from './Subscription';
 import { SubscriptionType } from '../../types/entities/SubscriptionType';
 import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 import { Box, Container, CircularProgress } from '@mui/material';
+import { ErrorType } from '../../types/responses/errorResponses';
 
 
 const Subscriptions: React.FC = () => {
@@ -11,7 +12,8 @@ const Subscriptions: React.FC = () => {
     const handleError = useApiErrorHandler();
 
     useEffect(() => {
-        isError && handleError(error)
+        const e = error as ErrorType
+        isError && handleError(e)
     }, [isError, error, handleError])
 
     return (

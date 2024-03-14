@@ -1,7 +1,6 @@
 import { emptySplitApi } from "./baseApi";
-import { EndpointBuilder, BaseQueryFn, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query";
 import { BaseResponse } from "../types/responses/baseResponse";
-import { SubscriptionResponse, SubscriptionsResponse } from "../types/responses/subscriptionResponses";
+import { GetPricesByProductIdsResponse, SubscriptionResponse, SubscriptionsResponse } from "../types/responses/subscriptionResponses";
 
 interface SubscribeRequestData {
     url: string,
@@ -9,9 +8,12 @@ interface SubscribeRequestData {
 interface UnsubscribeRequestData {
     id: string,
 }
+interface GetPricesByProductIdsRequestData {
+    product_ids: string[],
+}
 
 export const subscriptionApiSlice = emptySplitApi.injectEndpoints({
-    endpoints: (builder: EndpointBuilder<BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, unknown, FetchBaseQueryMeta>, "Auth", "api">) => ({
+    endpoints: (builder) => ({
         subscribe: builder.mutation<BaseResponse, SubscribeRequestData>({
             query: (body: SubscribeRequestData) => ({
                 url: `/api/subscribe`,
@@ -44,7 +46,16 @@ export const subscriptionApiSlice = emptySplitApi.injectEndpoints({
                 credentials: 'include',
                 method: 'GET',
             }),
-            providesTags: ['Subscription'],
+            providesTags: ['Subscriptions'],
+        }),
+        getPricesByProductIds: builder.query<GetPricesByProductIdsResponse, GetPricesByProductIdsRequestData>({
+            query: (body: GetPricesByProductIdsRequestData) => ({
+                url: `/api/products/prices`,
+                credentials: 'include',
+                method: 'POST',
+                body
+            }),
+            providesTags: ['Subscriptions'],
         }),
     })
 });
@@ -54,4 +65,5 @@ export const {
     useUnsubscribeMutation,
     useGetSubscriptionsQuery,
     useGetSubscriptionQuery,
+    useGetPricesByProductIdsQuery,
 } = subscriptionApiSlice;

@@ -27,7 +27,7 @@ body {
   /* display: flex; */
   /* place-items: center; */
   min-width: 320px;
-  min-height: 100vh;
+  /* min-height: 100vh; */
   overflow-x: hidden;
 }
 
@@ -45,4 +45,9 @@ button {
   font-family: inherit;
   cursor: pointer;
   transition: border-color 0.25s;
+}
+
+.MuiSwipeableDrawer-paperAnchorBottom {
+  border-top-left-radius: '16px';
+  border-top-right-radius: '16px';
 }

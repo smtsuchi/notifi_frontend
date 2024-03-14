@@ -6,7 +6,7 @@ export const emptySplitApi = createApi({
     tagTypes: [
         'Auth',
         'Subscriptions',
-        'User'
+        'User',
     ],
     baseQuery: fetchBaseQuery({
         baseUrl: `${BACKEND_URL}`,

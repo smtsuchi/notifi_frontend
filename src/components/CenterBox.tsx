@@ -8,7 +8,7 @@ const CenterBox: React.FC<React.PropsWithChildren> = ({ children }) => {
             justifyContent="center"
             alignItems={{ sm: "center" }}
             marginTop="24px"
-            minHeight="100vh"
+            minHeight="80vh"
         >
 
             <Container component="div" maxWidth="xs" sx={{ boxShadow: { xs: 0, sm: 3 }, borderRadius: 2, }}>
@@ -19,6 +19,7 @@ const CenterBox: React.FC<React.PropsWithChildren> = ({ children }) => {
                         display: 'flex',
                         flexDirection: 'column',
                     }}
+                    height={{ xs: '100%' }}
                 >
                     {children}
                 </Box>
@@ -28,4 +29,4 @@ const CenterBox: React.FC<React.PropsWithChildren> = ({ children }) => {
     )
 }
 
-export default CenterBox
+export default CenterBox;

@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useState } from 'react';
 import { NotificationMethodType, UserType } from '../types/entities/UserType';
 import {
     useUpdateNotifyOnDropOnlyMutation,
-    useUpdateNotificationMethodMutation
+    useUpdateNotificationMethodMutation,
 } from '../slices/userSlice';
 import toast from 'react-hot-toast';
 import { useApiErrorHandler } from '../hooks/useApiErrorHandler';
@@ -17,6 +17,7 @@ interface AuthContextType {
     setNotificationMethod: (notificationMethod: NotificationMethodType) => void;
     notifyOnDropOnly: boolean;
     setNotifyOnDropOnly: (notifyOnDropOnly: boolean) => void;
+    updateProfile: (user: UserType) => void
 }
 const initialUser: UserType = {
     id: '',
@@ -36,7 +37,8 @@ const initialValue = {
     notificationMethod: 'both' as NotificationMethodType,
     setNotificationMethod: () => {},
     notifyOnDropOnly: false,
-    setNotifyOnDropOnly: () => {}
+    setNotifyOnDropOnly: () => {},
+    updateProfile: () => {},
 }
 
 
@@ -62,8 +64,13 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
 
     const logout = useCallback(()=>{
         localStorage.removeItem('user')
-        _setUser(initialUser)
+        _setUser(initialUser);
     }, []);
+
+    const updateProfile = async (updatedUser: UserType) => {
+        console.log(updatedUser, "UP");
+        _setUser(updatedUser)
+    };
     
     const setNotificationMethod = async (notification_method: NotificationMethodType) => {
         const oldState = { ...user};
@@ -74,6 +81,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             const response = await updateNotificationMethod({notification_method}).unwrap()
             if (response.status === 'ok'){
                 toast.success(response.message)
+                localStorage.setItem('user', JSON.stringify({...user, notification_method}))                
             } else {
                 toast.error('Something went wrong.')
             }
@@ -93,6 +101,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         try{
             if (response.status === 'ok'){
                 toast.success(response.message)
+                localStorage.setItem('user', JSON.stringify({...user, notify_on_drop_only})) 
             } else {
                 toast.error("Something went wrong.")
             }
@@ -108,6 +117,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         user,
         login,
         logout,
+        updateProfile,
         setNotificationMethod,
         notificationMethod: user.notification_method,
         setNotifyOnDropOnly,

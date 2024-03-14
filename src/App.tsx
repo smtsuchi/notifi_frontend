@@ -8,6 +8,7 @@ import SignUp from "./pages/Auth/SignUp";
 import { Toaster } from "react-hot-toast";
 import { Container } from '@mui/material';
 import Profile from "./pages/Profile";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
 
@@ -24,6 +25,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
 
         </Routes>
       </Container>
