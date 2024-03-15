@@ -8,23 +8,30 @@ import toast from 'react-hot-toast';
 import { ErrorType } from '../types/responses/errorResponses';
 import { useApiErrorHandler } from '../hooks/useApiErrorHandler';
 
-const pages = [
-  {
-    label: 'My Subscriptions',
-    link: '/subscriptions'
-  },
-  {
-    label: 'Search',
-    link: '/search'
-  },
-];
-
-
-
 const ResponsiveAppBar = () => {
   const navigate = useNavigate();
   const [sendLogout] = useLogoutMutation();
-  const { logout } = useAuth();
+  const { logout, accessToken, isAuthenticated, user } = useAuth();
+  let pages
+  if ( isAuthenticated ){
+    pages = [
+      {
+        label: 'My Subscriptions',
+        link: '/subscriptions'
+      },
+      {
+        label: 'Search',
+        link: '/search'
+      },
+    ];
+  } else {
+    pages = [
+      {
+        label: 'My Subscriptions',
+        link: '/subscriptions'
+      },
+    ];
+  }
   const handleError = useApiErrorHandler();
   const settings = [{
     label: 'Profile',
@@ -39,7 +46,7 @@ const ResponsiveAppBar = () => {
     label: 'Logout',
     onClick: async () => {
       try {
-        const response = await sendLogout().unwrap();
+        const response = await sendLogout(accessToken).unwrap();
         if (response.status === 'ok') {
           logout();
           navigate('/login');
@@ -53,7 +60,6 @@ const ResponsiveAppBar = () => {
   }];
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const { user, isAuthenticated } = useAuth();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -84,7 +90,7 @@ const ResponsiveAppBar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#thank-u-for-being-here"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -143,7 +149,7 @@ const ResponsiveAppBar = () => {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="#thank-you-for-being-here"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

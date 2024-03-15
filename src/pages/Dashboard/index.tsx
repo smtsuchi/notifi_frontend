@@ -9,6 +9,7 @@ import SubscriptionDataGrid from './SubscriptionDataGrid';
 import SubscriptionChart from './SubscriptionChart';
 import { getSubscriptionsGroupedByProductId } from '../../helpers';
 import { SubscriptionType } from '../../types/entities/SubscriptionType';
+import { useAuth } from '../../hooks/useAuth';
 
 export type RowType = {
     imgUrl: string;
@@ -26,9 +27,9 @@ export type RowType = {
 
 
 const Dashboard: React.FC = () => {
-
+    const {accessToken} = useAuth();
     const [selected, setSelected] = useState<'dataGrid' | 'chart'>('dataGrid');
-    const { currentData, error, isError, isFetching } = useGetSubscriptionsQuery();
+    const { currentData, error, isError, isFetching } = useGetSubscriptionsQuery(accessToken);
     const handleError = useApiErrorHandler();
 
     useEffect(() => {
@@ -54,7 +55,7 @@ const Dashboard: React.FC = () => {
 
 
     return (
-        <Box sx={{ height: 520, width: '100%' }}>
+        <Box sx={{ minHeight: 520, width: '100%' }}>
             <BottomNavigation
                 showLabels
                 value={selected}

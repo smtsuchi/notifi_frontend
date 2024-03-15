@@ -28,7 +28,7 @@ interface EditProfileFormProps {
 }
 
 const EditProfileForm: React.FC<EditProfileFormProps> = ({ setOpen }) => {
-    const { user, updateProfile } = useAuth();
+    const { user, updateProfile, accessToken } = useAuth();
     const initialValues = {
         username: user.username,
         email: user.email,
@@ -38,7 +38,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({ setOpen }) => {
     const handleError = useApiErrorHandler();
     const handleSubmit = async ({username, email, phone}: typeof initialValues) => {
         try{
-            const response = await sendEditProfile({username, email, phone}).unwrap()
+            const response = await sendEditProfile({body:{username, email, phone}, accessToken}).unwrap()
             if (response.status === 'ok'){
                 toast.success(response.message)
                 updateProfile(response.user)

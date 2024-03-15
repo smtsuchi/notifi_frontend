@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const StyledGridOverlay = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -27,8 +28,9 @@ const StyledGridOverlay = styled('div')(({ theme }) => ({
 }));
 
 export default function NoRowsOverlay() {
+  const { isAuthenticated } = useAuth();
   return (
-    <StyledGridOverlay>
+    <StyledGridOverlay sx={{ marginTop: 2 }}>
       <svg
         width="120"
         height="100"
@@ -68,11 +70,17 @@ export default function NoRowsOverlay() {
           </g>
         </g>
       </svg>
-      <Box sx={{ mt: 1, textAlign: 'center' }}>
+      <Box sx={{ mt: 2, textAlign: 'center' }}>
         <p>
           You have no subscriptions
         </p>
-        <Link to='/search' style={{ color: '#0061c0', textDecoration: 'underline' }}>Find products to track</Link>
+        {
+          isAuthenticated ? (
+            <Link to='/search' style={{ color: '#0061c0', textDecoration: 'underline' }}>Find products to track</Link>
+          ) : (
+            <Link to='/login' style={{ color: '#0061c0', textDecoration: 'underline' }}>Please log in to begin using NotiFi</Link>
+          )
+        }
       </Box>
     </StyledGridOverlay>
   );

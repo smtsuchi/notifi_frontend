@@ -11,7 +11,8 @@ import { ErrorType } from '../types/responses/errorResponses';
 interface AuthContextType {
     isAuthenticated: boolean;
     user: UserType;
-    login: (user: UserType) => void;
+    accessToken: string;
+    login: (user: UserType, access_token: string) => void;
     logout: () => void;
     notificationMethod: NotificationMethodType;
     setNotificationMethod: (notificationMethod: NotificationMethodType) => void;
@@ -32,6 +33,7 @@ const initialUser: UserType = {
 const initialValue = {
     isAuthenticated: false,
     user: initialUser,
+    accessToken: '',
     login: () => {},
     logout: () => {},
     notificationMethod: 'both' as NotificationMethodType,
@@ -52,23 +54,31 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         }
         return initialUser
     },[]);
+    const getTokenFromLS = useCallback(() => {
+        const token = localStorage.getItem('access_token');
+        return token? token.slice(1,-1): ''
+    },[]);
     const [user, _setUser] = useState<UserType>(getUserFromLS());
+    const [accessToken, setAccessToken] = useState<string>(getTokenFromLS());
     const [updateNotifyOnDropOnly] = useUpdateNotifyOnDropOnlyMutation();
     const [updateNotificationMethod] = useUpdateNotificationMethodMutation();
     const handleError = useApiErrorHandler();
 
-    const login = (user: UserType)=>{
+    const login = (user: UserType, accessToken: string)=>{
         localStorage.setItem('user', JSON.stringify(user))
+        localStorage.setItem('access_token', JSON.stringify(accessToken))
         _setUser(user)
+        setAccessToken(accessToken)
     };
 
     const logout = useCallback(()=>{
-        localStorage.removeItem('user')
+        localStorage.removeItem('user');
+        localStorage.removeItem('access_token');
         _setUser(initialUser);
+        setAccessToken('')
     }, []);
 
     const updateProfile = async (updatedUser: UserType) => {
-        console.log(updatedUser, "UP");
         _setUser(updatedUser)
     };
     
@@ -78,7 +88,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
             return {...prevUser, notification_method}
         })
         try{
-            const response = await updateNotificationMethod({notification_method}).unwrap()
+            const response = await updateNotificationMethod({body:{notification_method}, accessToken}).unwrap()
             if (response.status === 'ok'){
                 toast.success(response.message)
                 localStorage.setItem('user', JSON.stringify({...user, notification_method}))                
@@ -97,7 +107,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
         _setUser((prevUser)=>{
             return {...prevUser, notify_on_drop_only}
         })
-        const response = await updateNotifyOnDropOnly({notify_on_drop_only}).unwrap()
+        const response = await updateNotifyOnDropOnly({body:{notify_on_drop_only}, accessToken}).unwrap()
         try{
             if (response.status === 'ok'){
                 toast.success(response.message)
@@ -115,6 +125,7 @@ const AuthContextProvider: React.FC<React.PropsWithChildren> = ({ children }) =>
     const values = {
         isAuthenticated: Boolean(user.id),
         user,
+        accessToken,
         login,
         logout,
         updateProfile,

@@ -7,6 +7,7 @@ import { useSubscribeMutation } from '../../slices/subscriptionSlice';
 import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 import { ErrorType } from '../../types/responses/errorResponses';
 import toast from 'react-hot-toast';
+import { useAuth } from '../../hooks/useAuth';
 
 const defaultUrl = `https://www.amazon.com`;
 
@@ -14,6 +15,7 @@ const Settings: React.FC = () => {
     const [selectedUrl, setSelectedUrl] = useState(defaultUrl);
     const [subscribe, { isLoading }] = useSubscribeMutation();
     const handleError = useApiErrorHandler();
+    const {accessToken}= useAuth();
 
     useEffect(() => {
         setSelectedUrl(formatUrl(selectedUrl));
@@ -23,7 +25,7 @@ const Settings: React.FC = () => {
         const result = validateUrl(selectedUrl);
         if (result.status === 'ok') {
             try {
-                const response = await subscribe({ url: selectedUrl }).unwrap();
+                const response = await subscribe({body:{ url: selectedUrl }, accessToken}).unwrap();
                 if (response.status === 'ok') {
                     toast.success(response.message);
                 }

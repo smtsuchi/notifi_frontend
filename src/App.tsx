@@ -1,5 +1,5 @@
 import Navbar from "./components/Navbar"
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Subscriptions from "./pages/Subscriptions";
 import Settings from "./pages/Settings";
 import Search from "./pages/Search";
@@ -19,6 +19,7 @@ const App = () => {
       <Toaster />
       <Container component="main" sx={{ marginTop: {xs: '64px', sm: '80px'} }}>
         <Routes>
+          <Route path="/" element={<Navigate to='/subscriptions' />} />
           <Route path="/subscriptions" element={<Subscriptions />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/search" element={<Search />} />

@@ -34,7 +34,7 @@ const Login: React.FC = () => {
     try{
       const response = await sendLogin({username, password}).unwrap();
       if (response.status === 'ok'){
-        login(response.user);
+        login(response.user, response.access_token);
         toast.success(response.message);
         navigate('/')
       } 

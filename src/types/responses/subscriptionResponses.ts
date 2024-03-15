@@ -1,5 +1,5 @@
 
-import { PriceType } from "../entities/PriceType";
+import { PriceType, ProductPriceData } from "../entities/PriceType";
 import { SubscriptionType } from "../entities/SubscriptionType";
 import { BaseResponse } from "./baseResponse";
 
@@ -12,7 +12,9 @@ export interface SubscriptionResponse extends BaseResponse {
 }
 
 export interface GetPricesByProductIdsResponse extends BaseResponse {
-    data: {
-        [productId: string]: PriceType;
-    },
+    data: ProductPriceData
+}
+
+export interface GetPricesByProductIdResponse extends BaseResponse {
+    data: PriceType[]
 }

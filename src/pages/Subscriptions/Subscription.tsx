@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { styled } from '@mui/material/styles';
-import { 
-    Card, CardHeader, CardMedia,CardContent, CardActions, Collapse,
-    Avatar, Box, Menu, MenuItem, Typography } from '@mui/material';
+import {
+    Card, CardHeader, CardMedia, CardContent, CardActions, Collapse,
+    Avatar, Box, Menu, MenuItem, Typography
+} from '@mui/material';
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { red } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -16,6 +15,7 @@ import { useUnsubscribeMutation } from '../../slices/subscriptionSlice';
 import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 import toast from 'react-hot-toast';
 import { ErrorType } from '../../types/responses/errorResponses';
+import { useAuth } from '../../hooks/useAuth';
 
 interface ExpandMoreProps extends IconButtonProps {
     expand: number;
@@ -40,17 +40,18 @@ const Subscription: React.FC<SubscriptionProps> = ({ subscription }) => {
     const [expanded, setExpanded] = useState(false);
     const [unsubscribe] = useUnsubscribeMutation();
     const handleError = useApiErrorHandler();
+    const { accessToken } = useAuth();
 
     const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
-      };
-    
-      const handleClose = () => {
+    };
+
+    const handleClose = () => {
         setAnchorEl(null);
-      };
-      const handleClick = async () => {
+    };
+    const handleClick = async () => {
         try {
-            const response = await unsubscribe({id: subscription.id}).unwrap();
+            const response = await unsubscribe({ body: { id: subscription.id }, accessToken }).unwrap();
             if (response.status === 'ok') {
                 toast.success(response.message);
             }
@@ -59,7 +60,7 @@ const Subscription: React.FC<SubscriptionProps> = ({ subscription }) => {
             handleError(e);
         }
         handleClose();
-      };
+    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -137,30 +138,28 @@ const Subscription: React.FC<SubscriptionProps> = ({ subscription }) => {
                     </a>
                 </Typography>
             </CardContent>
-            <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
-                    <FavoriteIcon />
-                </IconButton>
-                <IconButton aria-label="share">
-                    <ShareIcon />
-                </IconButton>
-                <ExpandMore
-                    expand={+expanded}
-                    onClick={handleExpandClick}
-                    aria-expanded={expanded}
-                    aria-label="show more"
-                >
-                    <ExpandMoreIcon />
-                </ExpandMore>
-            </CardActions>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
-                <CardContent>
-                    <Typography paragraph>Product Description:</Typography>
-                    <Typography paragraph>
-                        {subscription.product.description}
-                    </Typography>
-                </CardContent>
-            </Collapse>
+            {subscription.product.description && (
+                <>
+                    <CardActions disableSpacing>
+                        <ExpandMore
+                            expand={+expanded}
+                            onClick={handleExpandClick}
+                            aria-expanded={expanded}
+                            aria-label="show more"
+                        >
+                            <ExpandMoreIcon />
+                        </ExpandMore>
+                    </CardActions>
+                    <Collapse in={expanded} timeout="auto" unmountOnExit>
+                        <CardContent>
+                            <Typography paragraph>Product Description:</Typography>
+                            <Typography paragraph>
+                                {subscription.product.description}
+                            </Typography>
+                        </CardContent>
+                    </Collapse>
+                </>
+            )}
         </Card>
     );
 }

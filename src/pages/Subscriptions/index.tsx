@@ -5,10 +5,14 @@ import { SubscriptionType } from '../../types/entities/SubscriptionType';
 import { useApiErrorHandler } from '../../hooks/useApiErrorHandler';
 import { Box, Container, CircularProgress } from '@mui/material';
 import { ErrorType } from '../../types/responses/errorResponses';
+import { useAuth } from '../../hooks/useAuth';
+import NoRowsOverlay from '../Dashboard/NoRowsOverlay';
 
 
 const Subscriptions: React.FC = () => {
-    const { currentData, error, isError, isFetching } = useGetSubscriptionsQuery();
+    const {accessToken} = useAuth();
+    console.log(accessToken, !!accessToken)
+    const { currentData, error, isError, isFetching } = useGetSubscriptionsQuery(accessToken, {skip: !accessToken});
     const handleError = useApiErrorHandler();
 
     useEffect(() => {
@@ -38,7 +42,7 @@ const Subscriptions: React.FC = () => {
                             subscription={subscription}
                         />
                     ))
-                    : !isFetching && 'No data available'
+                    : !isFetching && <NoRowsOverlay />
                 }
             </Container>
         </Box>

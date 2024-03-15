@@ -4,3 +4,7 @@ export interface PriceType {
     timestamp: string;
     amount: number;
 }
+
+export interface ProductPriceData {
+    [productId: string]: PriceType[];
+}

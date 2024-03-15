@@ -27,10 +27,13 @@ export const authApiSlice = emptySplitApi.injectEndpoints({
             }),
             invalidatesTags: ['Auth', 'Subscriptions', 'User'],
         }),
-        logout: builder.mutation<BaseResponse, void>({
-            query: () => ({
+        logout: builder.mutation<BaseResponse, string>({
+            query: (accessToken: string) => ({
                 url: `/auth/logout`,
                 method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                },
             }),
             invalidatesTags: ['Auth', 'Subscriptions', 'User'],
         }),

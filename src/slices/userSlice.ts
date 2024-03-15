@@ -17,29 +17,41 @@ interface EditProfileRequestData {
 
 export const userApiSlice = emptySplitApi.injectEndpoints({
     endpoints: (builder) => ({
-        updateNotificationMethod: builder.mutation<BaseResponse, UpdateNotificationMethodRequestData>({
-            query: (body: UpdateNotificationMethodRequestData) => ({
+        updateNotificationMethod: builder.mutation<BaseResponse, {body:UpdateNotificationMethodRequestData, accessToken:string}>({
+            query: ({body, accessToken}:{body: UpdateNotificationMethodRequestData, accessToken:string}) => ({
                 url: `/api/user/notification-method`,
                 method: 'PUT',
                 credentials: 'include',
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": 'application/json'
+                },
                 body
             }),
             invalidatesTags: ['User'],
         }),
-        updateNotifyOnDropOnly: builder.mutation<BaseResponse, UpdateNotifyOnDropOnlyRequestData>({
-            query: (body: UpdateNotifyOnDropOnlyRequestData) => ({
+        updateNotifyOnDropOnly: builder.mutation<BaseResponse, {body:UpdateNotifyOnDropOnlyRequestData, accessToken:string}>({
+            query: ({body, accessToken}:{body: UpdateNotifyOnDropOnlyRequestData, accessToken:string}) => ({
                 url: `/api/user/notify-on-drop-only`,
                 method: 'PUT',
                 credentials: 'include',
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": 'application/json'
+                },
                 body
             }),
             invalidatesTags: ['User'],
         }),
-        editProfile: builder.mutation<UserResponse, EditProfileRequestData>({
-            query: (body: EditProfileRequestData) => ({
+        editProfile: builder.mutation<UserResponse, {body:EditProfileRequestData, accessToken:string}>({
+            query: ({body, accessToken}:{body: EditProfileRequestData, accessToken:string}) => ({
                 url: `/api/user/profile`,
                 method: 'PUT',
                 credentials: 'include',
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`,
+                    "Content-Type": 'application/json'
+                },
                 body
             }),
             invalidatesTags: ['User'],
